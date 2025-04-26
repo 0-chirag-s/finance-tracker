@@ -3,9 +3,9 @@
 import { useFinanceStore, Category } from "@/lib/store";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Edit2, Trash2 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { cn } from "@/lib/utils"; // Make sure you have this utility
 import {
   AlertDialog,
   AlertDialogAction,
@@ -78,11 +78,15 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) 
               <span>Progress</span>
               <span>{progress.toFixed(0)}%</span>
             </div>
-            <Progress 
-              value={Math.min(progress, 100)} 
-              className="h-2"
-              indicatorClassName={progress > 100 ? "bg-destructive" : undefined}
-            />
+            <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
+              <div 
+                className={cn(
+                  "h-full transition-all",
+                  progress > 100 ? "bg-destructive" : "bg-primary"
+                )}
+                style={{ width: `${Math.min(progress, 100)}%` }}
+              />
+            </div>
           </div>
         </div>
       </CardContent>

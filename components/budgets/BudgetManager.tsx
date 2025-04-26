@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { generateMonthsArray, formatCurrency } from "@/lib/utils";
 import { BudgetComparisonChart } from "@/components/charts/BudgetComparisonChart";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils"; // Make sure you have this utility
 
 export default function BudgetManager() {
   const { categories, getTotalExpensesByCategory, getTotalExpenses, getMonthlyBudgetTotal } = useFinanceStore();
@@ -72,11 +73,15 @@ export default function BudgetManager() {
                 <span>Progress</span>
                 <span>{budgetPercentage.toFixed(0)}%</span>
               </div>
-              <Progress 
-                value={Math.min(budgetPercentage, 100)} 
-                className="h-3"
-                indicatorClassName={budgetPercentage > 100 ? "bg-destructive" : undefined}
-              />
+              <div className="relative h-3 w-full overflow-hidden rounded-full bg-secondary">
+                <div 
+                  className={cn(
+                    "h-full transition-all", 
+                    budgetPercentage > 100 ? "bg-destructive" : "bg-primary"
+                  )}
+                  style={{ width: `${Math.min(budgetPercentage, 100)}%` }}
+                />
+              </div>
               
               <p className={`text-sm ${budgetPercentage > 100 ? 'text-destructive' : 'text-muted-foreground'}`}>
                 {budgetPercentage > 100 
@@ -144,13 +149,18 @@ export default function BudgetManager() {
                           </span>
                         </div>
                         
-                        <Progress 
-                          value={Math.min(percentage, 100)} 
-                          className="h-2"
-                          indicatorClassName={percentage > 100 ? "bg-destructive" : undefined}
-                          style={{ backgroundColor: `${category.color}20` }}
-                          indicatorStyle={{ backgroundColor: category.color }}
-                        />
+                        <div className="relative h-2 w-full overflow-hidden rounded-full" style={{ backgroundColor: `${category.color}20` }}>
+                          <div 
+                            className={cn(
+                              "h-full transition-all",
+                              percentage > 100 ? "bg-destructive" : ""
+                            )}
+                            style={{ 
+                              width: `${Math.min(percentage, 100)}%`,
+                              backgroundColor: percentage > 100 ? undefined : category.color
+                            }}
+                          />
+                        </div>
                       </div>
                     );
                   })}
